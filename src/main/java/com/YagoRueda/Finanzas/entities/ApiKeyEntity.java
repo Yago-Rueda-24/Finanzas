@@ -12,7 +12,7 @@ public class ApiKeyEntity {
     private long id;
     @Getter
     @Setter
-    private String api_key;
+    private String apiKey;
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     @Getter
