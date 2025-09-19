@@ -59,4 +59,14 @@ public class AuthService {
         return  api_key_no_hash;
 
     }
+
+    public UserEntity validateApiKey(String apiKey){
+
+        if(!apiKeyRepository.existsByApiKey(apiKey)){
+            return null;
+        }
+        return apiKeyRepository.findByApiKey(apiKey);
+
+
+    }
 }
