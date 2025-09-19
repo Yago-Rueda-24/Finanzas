@@ -6,7 +6,7 @@ import com.YagoRueda.Finanzas.entities.UserEntity;
 import com.YagoRueda.Finanzas.repositories.ApiKeyRepository;
 import com.YagoRueda.Finanzas.repositories.UserRepository;
 import com.YagoRueda.Finanzas.utils.ApiKeyGenerator;
-import com.YagoRueda.Finanzas.utils.BcryptHashser;
+import com.YagoRueda.Finanzas.utils.HashUtil;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -20,9 +20,9 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final ApiKeyRepository apiKeyRepository;
-    private final BcryptHashser hashser;
+    private final HashUtil hashser;
 
-    public AuthService(UserRepository userRepository, ApiKeyRepository apiKeyRepository, BcryptHashser hashser) {
+    public AuthService(UserRepository userRepository, ApiKeyRepository apiKeyRepository, HashUtil hashser) {
         this.userRepository = userRepository;
         this.apiKeyRepository = apiKeyRepository;
         this.hashser = hashser;
@@ -36,7 +36,7 @@ public class AuthService {
 
         UserEntity user = new UserEntity();
         user.setUsername(dto.getUsername());
-        user.setPassword(hashser.hash(dto.getPassword()));
+        user.setPassword(hashser.BCryptHash(dto.getPassword()));
         user.setCreated_at(Instant.now());
         return userRepository.save(user);
     }
@@ -46,14 +46,14 @@ public class AuthService {
             throw new IllegalArgumentException("Usuario o passwords incorrectos");
         }
         UserEntity user = userRepository.findByUsername(dto.getUsername());
-        boolean password_correct= hashser.match(dto.getPassword(), user.getPassword());
+        boolean password_correct= hashser.BCryptMatch(dto.getPassword(), user.getPassword());
         if (!password_correct) {
             throw new IllegalArgumentException("Usuario o passwords incorrectos");
         }
 
         String api_key_no_hash = ApiKeyGenerator.generateApiKey();
         ApiKeyEntity apiKey = new ApiKeyEntity();
-        apiKey.setApiKey(hashser.hash(api_key_no_hash));
+        apiKey.setApiKey(hashser.sha256Hash(api_key_no_hash));
         apiKey.setUser(user);
         apiKeyRepository.save(apiKey);
         return  api_key_no_hash;
@@ -62,10 +62,14 @@ public class AuthService {
 
     public UserEntity validateApiKey(String apiKey){
 
-        if(!apiKeyRepository.existsByApiKey(apiKey)){
+        String hashed_apiKey = hashser.sha256Hash(apiKey);
+
+        if(!apiKeyRepository.existsByApiKey(hashed_apiKey)){
             return null;
         }
-        return apiKeyRepository.findByApiKey(apiKey);
+        UserEntity user = apiKeyRepository.findByApiKey(hashed_apiKey);
+        System.out.println(user.getUsername());
+        return user;
 
 
     }
