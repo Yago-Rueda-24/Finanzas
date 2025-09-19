@@ -35,7 +35,7 @@ public class AuthController {
     @PostMapping("/generate")
     public ResponseEntity<?> generateToken(@RequestBody UserDTO dto){
         try {
-            ApiKeyEntity apiKey =authService.generateToken(dto);
+            String apiKey =authService.generateToken(dto);
             return ResponseEntity.status(HttpStatus.OK).body(apiKey);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));

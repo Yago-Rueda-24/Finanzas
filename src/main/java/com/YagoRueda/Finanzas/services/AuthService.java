@@ -6,6 +6,7 @@ import com.YagoRueda.Finanzas.entities.UserEntity;
 import com.YagoRueda.Finanzas.repositories.ApiKeyRepository;
 import com.YagoRueda.Finanzas.repositories.UserRepository;
 import com.YagoRueda.Finanzas.utils.ApiKeyGenerator;
+import com.YagoRueda.Finanzas.utils.BcryptHashser;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -19,10 +20,12 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final ApiKeyRepository apiKeyRepository;
+    private final BcryptHashser hashser;
 
-    public AuthService(UserRepository userRepository, ApiKeyRepository apiKeyRepository) {
+    public AuthService(UserRepository userRepository, ApiKeyRepository apiKeyRepository, BcryptHashser hashser) {
         this.userRepository = userRepository;
         this.apiKeyRepository = apiKeyRepository;
+        this.hashser = hashser;
     }
 
     public UserEntity register(UserDTO dto) throws IllegalArgumentException {
@@ -33,26 +36,27 @@ public class AuthService {
 
         UserEntity user = new UserEntity();
         user.setUsername(dto.getUsername());
-        user.setPassword(dto.getPassword());
+        user.setPassword(hashser.hash(dto.getPassword()));
         user.setCreated_at(Instant.now());
         return userRepository.save(user);
     }
 
-    public ApiKeyEntity generateToken(UserDTO dto) throws IllegalArgumentException {
-        System.out.println("1");
+    public String generateToken(UserDTO dto) throws IllegalArgumentException {
         if (!userRepository.existsByUsername(dto.getUsername())) {
             throw new IllegalArgumentException("Usuario o passwords incorrectos");
         }
         UserEntity user = userRepository.findByUsername(dto.getUsername());
-        if (!user.getPassword().equals(dto.getPassword())) {
+        boolean password_correct= hashser.match(dto.getPassword(), user.getPassword());
+        if (!password_correct) {
             throw new IllegalArgumentException("Usuario o passwords incorrectos");
         }
-        System.out.println("2");
+
+        String api_key_no_hash = ApiKeyGenerator.generateApiKey();
         ApiKeyEntity apiKey = new ApiKeyEntity();
-        apiKey.setApiKey(ApiKeyGenerator.generateApiKey());
+        apiKey.setApiKey(hashser.hash(api_key_no_hash));
         apiKey.setUser(user);
-        System.out.println("3");
-        return apiKeyRepository.save(apiKey);
+        apiKeyRepository.save(apiKey);
+        return  api_key_no_hash;
 
     }
 }
