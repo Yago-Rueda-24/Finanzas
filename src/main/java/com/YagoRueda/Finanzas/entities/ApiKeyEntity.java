@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
+
 @Entity
 public class ApiKeyEntity {
     @Id
@@ -18,5 +20,11 @@ public class ApiKeyEntity {
     @Getter
     @Setter
     private UserEntity user;
+    @Getter
+    @Setter
+    private boolean validated;
+    @Getter
+    @Setter
+    private Instant createdAT;
 
 }
