@@ -14,11 +14,6 @@ public class TransactionDTO {
     @Setter
     private long id;
 
-
-    @Getter
-    @Setter
-    private UserEntity user;
-
     @Getter
     @Setter
     private String description;
