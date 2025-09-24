@@ -25,4 +25,14 @@ public class UserEntity {
     @Getter
     @Setter
     private Instant created_at;
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this== obj){return  true;}
+        if (obj == null || getClass() != obj.getClass()) return false;
+        UserEntity user = (UserEntity) obj;
+        return this.username.equals(user.getUsername());
+
+    }
 }
