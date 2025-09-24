@@ -3,9 +3,11 @@ package com.YagoRueda.Finanzas.services;
 import com.YagoRueda.Finanzas.DTOs.TransactionDTO;
 import com.YagoRueda.Finanzas.entities.TransactionEntity;
 import com.YagoRueda.Finanzas.entities.UserEntity;
+import com.YagoRueda.Finanzas.exceptions.InputTransactionException;
 import com.YagoRueda.Finanzas.repositories.TransactionRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,11 +20,15 @@ public class TransactionService {
     }
 
 
-    private Map<String,String> checkDTO(TransactionDTO dto){
+    private Map<String, String> checkDTO(TransactionDTO dto) {
         Map<String, String> errors = new HashMap<>();
 
         if (dto.getDescription() == null || dto.getDescription().trim().isEmpty()) {
             errors.put("description", "La descripción no puede estar vacía");
+        }
+
+        if(dto.getAmount() == 0){
+            errors.put("amount","La cantidad debe ser un número positivo o negativo distinto de 0");
         }
 
         if (dto.getCategory() == null || dto.getCategory().trim().isEmpty()) {
@@ -37,12 +43,25 @@ public class TransactionService {
 
     }
 
-    public TransactionEntity create(UserEntity owner, TransactionDTO transaction){
+    public TransactionEntity create(UserEntity owner, TransactionDTO transaction) throws InputTransactionException {
 
         Map<String, String> errors = checkDTO(transaction);
-        if(!errors.isEmpty()){
-            throw new IllegalArgumentException("Se han encontrado errores en el dto");
+        if (!errors.isEmpty()) {
+            InputTransactionException e = new InputTransactionException("Error en los datos");
+            e.setErrors(errors);
+            throw e;
         }
+
+        TransactionEntity entity = new TransactionEntity();
+        entity.setUser(owner);
+        entity.setCreated_at(Instant.now());
+
+        entity.setDate(transaction.getDate());
+        entity.setAmount(transaction.getAmount());
+        entity.setDescription(transaction.getDescription());
+        entity.setCategory(transaction.getCategory());
+
+        return transactionRepository.save(entity);
 
     }
 
