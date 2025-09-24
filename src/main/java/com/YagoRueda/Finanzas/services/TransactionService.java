@@ -4,7 +4,9 @@ import com.YagoRueda.Finanzas.DTOs.TransactionDTO;
 import com.YagoRueda.Finanzas.entities.TransactionEntity;
 import com.YagoRueda.Finanzas.entities.UserEntity;
 import com.YagoRueda.Finanzas.exceptions.InputTransactionException;
+import com.YagoRueda.Finanzas.exceptions.UnauthorizedOperationException;
 import com.YagoRueda.Finanzas.repositories.TransactionRepository;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -66,7 +68,7 @@ public class TransactionService {
 
     }
 
-    public TransactionEntity modify(UserEntity owner, TransactionDTO transaction, long id) throws InputTransactionException, IllegalArgumentException {
+    public TransactionEntity modify(UserEntity owner, TransactionDTO transaction, long id) throws InputTransactionException, IllegalArgumentException, UnauthorizedOperationException {
 
         Map<String, String> errors = checkDTO(transaction);
         if (!errors.isEmpty()) {
@@ -80,8 +82,12 @@ public class TransactionService {
         if(optionalentity.isEmpty()){
             throw new IllegalArgumentException("ID invalido, transacción no encontrada");
         }
-
         TransactionEntity entity = optionalentity.get();
+        UserEntity dbUser= entity.getUser();
+
+        if (!dbUser.equals(owner)) {
+            throw new UnauthorizedOperationException("No puede modificar un recurso del que no eres propietario");
+        }
 
         entity.setDate(transaction.getDate());
         entity.setAmount(transaction.getAmount());
@@ -89,6 +95,24 @@ public class TransactionService {
         entity.setCategory(transaction.getCategory());
 
         return transactionRepository.save(entity);
+    }
+
+    public void delete(UserEntity owner, long id) throws  IllegalArgumentException, UnauthorizedOperationException {
+
+        Optional<TransactionEntity> optionalentity = transactionRepository.findById(id);
+        if(optionalentity.isEmpty()){
+            throw new IllegalArgumentException("ID invalido, transacción no encontrada");
+        }
+
+        TransactionEntity entity = optionalentity.get();
+        UserEntity dbUser= entity.getUser();
+
+        if (!dbUser.equals(owner)) {
+            throw new UnauthorizedOperationException("No puede modificar un recurso del que no eres propietario");
+        }
+
+        transactionRepository.deleteById(id);
+
     }
 
 }
