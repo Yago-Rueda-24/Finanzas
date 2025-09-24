@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class TransactionService {
@@ -63,6 +64,31 @@ public class TransactionService {
 
         return transactionRepository.save(entity);
 
+    }
+
+    public TransactionEntity modify(UserEntity owner, TransactionDTO transaction, long id) throws InputTransactionException, IllegalArgumentException {
+
+        Map<String, String> errors = checkDTO(transaction);
+        if (!errors.isEmpty()) {
+            InputTransactionException e = new InputTransactionException("Error en los datos");
+            e.setErrors(errors);
+            throw e;
+        }
+
+
+        Optional<TransactionEntity> optionalentity = transactionRepository.findById(id);
+        if(optionalentity.isEmpty()){
+            throw new IllegalArgumentException("ID invalido, transacción no encontrada");
+        }
+
+        TransactionEntity entity = optionalentity.get();
+
+        entity.setDate(transaction.getDate());
+        entity.setAmount(transaction.getAmount());
+        entity.setDescription(transaction.getDescription());
+        entity.setCategory(transaction.getCategory());
+
+        return transactionRepository.save(entity);
     }
 
 }
