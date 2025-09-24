@@ -10,9 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpResponse;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/transaction")
 public class TransactionController {
@@ -26,7 +23,7 @@ public class TransactionController {
 
 
     @PostMapping()
-    public ResponseEntity<?> saluda(HttpServletRequest request, @RequestBody TransactionDTO dto){
+    public ResponseEntity<?> create(HttpServletRequest request, @RequestBody TransactionDTO dto){
 
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
 
@@ -37,4 +34,19 @@ public class TransactionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
         }
     }
+    @PutMapping()
+    public ResponseEntity<?> modify(HttpServletRequest request, @RequestBody TransactionDTO dto, @RequestParam long id){
+        UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
+
+        try {
+            TransactionEntity transaction = transactionService.modify(user,dto,id);
+            return ResponseEntity.status(HttpStatus.OK).body(transaction);
+        } catch (InputTransactionException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+    }
+
 }
