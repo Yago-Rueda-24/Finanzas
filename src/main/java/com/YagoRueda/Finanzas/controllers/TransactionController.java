@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -21,6 +22,18 @@ public class TransactionController {
 
     public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<?>uploadCsv(HttpServletRequest request, @RequestParam("file")MultipartFile file){
+        UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
+        try {
+            transactionService.processCsv(user,file);
+            return ResponseEntity.ok("Archivo procesado correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error procesando archivo: " + e.getMessage());
+        }
     }
 
 
