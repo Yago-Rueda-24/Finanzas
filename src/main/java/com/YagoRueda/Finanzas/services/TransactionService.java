@@ -19,6 +19,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -132,12 +133,15 @@ public class TransactionService {
                     .parse(reader);
 
             List<TransactionEntity> transactions = new ArrayList<>();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
             for (CSVRecord record : records) {
                 TransactionEntity tx = new TransactionEntity();
-                tx.setDate(LocalDate.parse(record.get("fecha")));
+                tx.setDate(LocalDate.parse(record.get("fecha"),formatter));
+
                 tx.setDescription(record.get("descripcion"));
-                tx.setAmount(Float.parseFloat((record.get("monto"))));
+                float amount = Float.parseFloat(record.get("monto").replace(',','.'));
+                tx.setAmount(amount);
                 tx.setCategory(record.get("categoria"));
                 tx.setUser(owner);
                 tx.setCreated_at(Instant.now());
