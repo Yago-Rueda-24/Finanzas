@@ -7,12 +7,19 @@ import com.YagoRueda.Finanzas.exceptions.InputTransactionException;
 import com.YagoRueda.Finanzas.exceptions.UnauthorizedOperationException;
 import com.YagoRueda.Finanzas.repositories.TransactionRepository;
 import org.apache.catalina.User;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class TransactionService {
@@ -30,8 +37,8 @@ public class TransactionService {
             errors.put("description", "La descripción no puede estar vacía");
         }
 
-        if(dto.getAmount() == 0){
-            errors.put("amount","La cantidad debe ser un número positivo o negativo distinto de 0");
+        if (dto.getAmount() == 0) {
+            errors.put("amount", "La cantidad debe ser un número positivo o negativo distinto de 0");
         }
 
         if (dto.getCategory() == null || dto.getCategory().trim().isEmpty()) {
@@ -79,11 +86,11 @@ public class TransactionService {
 
 
         Optional<TransactionEntity> optionalentity = transactionRepository.findById(id);
-        if(optionalentity.isEmpty()){
+        if (optionalentity.isEmpty()) {
             throw new IllegalArgumentException("ID invalido, transacción no encontrada");
         }
         TransactionEntity entity = optionalentity.get();
-        UserEntity dbUser= entity.getUser();
+        UserEntity dbUser = entity.getUser();
 
         if (!dbUser.equals(owner)) {
             throw new UnauthorizedOperationException("No puede modificar un recurso del que no eres propietario");
@@ -97,15 +104,15 @@ public class TransactionService {
         return transactionRepository.save(entity);
     }
 
-    public void delete(UserEntity owner, long id) throws  IllegalArgumentException, UnauthorizedOperationException {
+    public void delete(UserEntity owner, long id) throws IllegalArgumentException, UnauthorizedOperationException {
 
         Optional<TransactionEntity> optionalentity = transactionRepository.findById(id);
-        if(optionalentity.isEmpty()){
+        if (optionalentity.isEmpty()) {
             throw new IllegalArgumentException("ID invalido, transacción no encontrada");
         }
 
         TransactionEntity entity = optionalentity.get();
-        UserEntity dbUser= entity.getUser();
+        UserEntity dbUser = entity.getUser();
 
         if (!dbUser.equals(owner)) {
             throw new UnauthorizedOperationException("No puede modificar un recurso del que no eres propietario");
@@ -115,4 +122,29 @@ public class TransactionService {
 
     }
 
+    public void processCsv(UserEntity owner, MultipartFile file) throws IOException
+    {
+        System.out.println("Recibido archivo: " + file.getOriginalFilename() + " (" + file.getSize() + " bytes)");
+        try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            Iterable<CSVRecord> records = CSVFormat.DEFAULT
+                    .withDelimiter(';')
+                    .withFirstRecordAsHeader()
+                    .parse(reader);
+
+            List<TransactionEntity> transactions = new ArrayList<>();
+
+            for (CSVRecord record : records) {
+                TransactionEntity tx = new TransactionEntity();
+                tx.setDate(LocalDate.parse(record.get("fecha")));
+                tx.setDescription(record.get("descripcion"));
+                tx.setAmount(Float.parseFloat((record.get("monto"))));
+                tx.setCategory(record.get("categoria"));
+                tx.setUser(owner);
+                tx.setCreated_at(Instant.now());
+                transactions.add(tx);
+            }
+
+            transactionRepository.saveAll(transactions);
+        }
+    }
 }
