@@ -3,12 +3,15 @@ package com.YagoRueda.Finanzas.services;
 import com.YagoRueda.Finanzas.DTOs.TransactionDTO;
 import com.YagoRueda.Finanzas.entities.TransactionEntity;
 import com.YagoRueda.Finanzas.entities.UserEntity;
+import com.YagoRueda.Finanzas.exceptions.ErrorCsvException;
 import com.YagoRueda.Finanzas.exceptions.InputTransactionException;
 import com.YagoRueda.Finanzas.exceptions.UnauthorizedOperationException;
 import com.YagoRueda.Finanzas.repositories.TransactionRepository;
 import org.apache.catalina.User;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -123,9 +126,64 @@ public class TransactionService {
 
     }
 
-    public void processCsv(UserEntity owner, MultipartFile file) throws IOException
-    {
-        System.out.println("Recibido archivo: " + file.getOriginalFilename() + " (" + file.getSize() + " bytes)");
+    public List<Long> validateCsv(MultipartFile file) throws IllegalArgumentException, IOException {
+
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Archivo vacio");
+        }
+        String filename = file.getOriginalFilename();
+        System.out.println(filename);
+        if (filename == null || !filename.toLowerCase().endsWith(".csv")) {
+            throw new IllegalArgumentException("El archivo debe tener extensión .csv");
+
+        }
+
+        try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            Iterable<CSVRecord> records = CSVFormat.DEFAULT
+                    .withDelimiter(';')
+                    .withFirstRecordAsHeader()
+                    .parse(reader);
+
+            List<Long> errors = new ArrayList<>();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            for (CSVRecord record : records) {
+                String fechaStr = record.get("fecha");
+                LocalDate fecha = LocalDate.parse(fechaStr, formatter);
+
+                // Validar descripción
+                String descripcion = record.get("descripcion");
+                if (descripcion == null || descripcion.isBlank()) {
+                    errors.add(record.getRecordNumber());
+                }
+
+                // Validar monto
+                String montoStr = record.get("monto").replace(",", ".");
+                if (Float.parseFloat(montoStr) == 0) {
+                    errors.add(record.getRecordNumber());
+                }
+
+
+                // Validar categoría
+                String categoria = record.get("categoria");
+                if (categoria == null || categoria.isBlank()) {
+                    errors.add(record.getRecordNumber());
+                }
+            }
+            return errors;
+        }
+    }
+
+    public void processCsv(UserEntity owner, MultipartFile file) throws IOException, IllegalArgumentException, ErrorCsvException {
+
+        List<Long> errors = validateCsv(file);
+        if (!errors.isEmpty()) {
+            ErrorCsvException e = new ErrorCsvException("Errores parseando las lineas del csv");
+            e.setErrors(errors);
+            throw e;
+        }
+
+
         try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             Iterable<CSVRecord> records = CSVFormat.DEFAULT
                     .withDelimiter(';')
@@ -137,10 +195,10 @@ public class TransactionService {
 
             for (CSVRecord record : records) {
                 TransactionEntity tx = new TransactionEntity();
-                tx.setDate(LocalDate.parse(record.get("fecha"),formatter));
+                tx.setDate(LocalDate.parse(record.get("fecha"), formatter));
 
                 tx.setDescription(record.get("descripcion"));
-                float amount = Float.parseFloat(record.get("monto").replace(',','.'));
+                float amount = Float.parseFloat(record.get("monto").replace(',', '.'));
                 tx.setAmount(amount);
                 tx.setCategory(record.get("categoria"));
                 tx.setUser(owner);
