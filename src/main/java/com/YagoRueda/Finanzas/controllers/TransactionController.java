@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -34,7 +35,25 @@ public class TransactionController {
             return ResponseEntity.ok("Archivo procesado correctamente");
         } catch (ErrorCsvException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error procesando archivo:\n " +  e.getMessage()+"\n" +e.getErrors());
+                    .body("Error procesando archivo:\n " + e.getMessage() + "\n" + e.getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error procesando archivo: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<?> validateCsv(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
+        UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
+
+        try {
+            List<Long> errors = transactionService.validateCsv(file);
+            if (errors.isEmpty()) {
+                return ResponseEntity.ok("Archivo validado");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Error procesando archivo:\n " + "Errores parseando las lineas del csv\n" + errors);
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Error procesando archivo: " + e.getMessage());
