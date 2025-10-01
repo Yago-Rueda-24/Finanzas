@@ -41,4 +41,17 @@ public class TransactionEntity {
     @Getter
     @Setter
     private Instant created_at;
+
+    @Override
+    public String toString() {
+        return "TransactionEntity{" +
+                "id=" + id +
+                ", user=" + user +
+                ", description='" + description + '\'' +
+                ", amount=" + amount +
+                ", category='" + category + '\'' +
+                ", date=" + date +
+                ", created_at=" + created_at +
+                '}';
+    }
 }
