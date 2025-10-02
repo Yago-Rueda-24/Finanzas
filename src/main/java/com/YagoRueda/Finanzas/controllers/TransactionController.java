@@ -3,6 +3,7 @@ package com.YagoRueda.Finanzas.controllers;
 import com.YagoRueda.Finanzas.DTOs.TransactionDTO;
 import com.YagoRueda.Finanzas.entities.TransactionEntity;
 import com.YagoRueda.Finanzas.entities.UserEntity;
+import com.YagoRueda.Finanzas.exceptions.ErrorCsvException;
 import com.YagoRueda.Finanzas.exceptions.InputTransactionException;
 import com.YagoRueda.Finanzas.exceptions.UnauthorizedOperationException;
 import com.YagoRueda.Finanzas.services.TransactionService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -25,11 +27,33 @@ public class TransactionController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<?>uploadCsv(HttpServletRequest request, @RequestParam("file")MultipartFile file){
+    public ResponseEntity<?> uploadCsv(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
+
         try {
-            transactionService.processCsv(user,file);
+            transactionService.processCsv(user, file);
             return ResponseEntity.ok("Archivo procesado correctamente");
+        } catch (ErrorCsvException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error procesando archivo:\n " + e.getMessage() + "\n" + e.getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error procesando archivo: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<?> validateCsv(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
+        UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
+
+        try {
+            List<Long> errors = transactionService.validateCsv(file);
+            if (errors.isEmpty()) {
+                return ResponseEntity.ok("Archivo validado");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Error procesando archivo:\n " + "Errores parseando las lineas del csv\n" + errors);
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Error procesando archivo: " + e.getMessage());
@@ -37,29 +61,29 @@ public class TransactionController {
     }
 
 
-
     @PostMapping()
-    public ResponseEntity<?> create(HttpServletRequest request, @RequestBody TransactionDTO dto){
+    public ResponseEntity<?> create(HttpServletRequest request, @RequestBody TransactionDTO dto) {
 
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
 
         try {
-            TransactionEntity transaction = transactionService.create(user,dto);
+            TransactionEntity transaction = transactionService.create(user, dto);
             return ResponseEntity.status(HttpStatus.OK).body(transaction);
         } catch (InputTransactionException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
         }
     }
+
     @PutMapping()
-    public ResponseEntity<?> modify(HttpServletRequest request, @RequestBody TransactionDTO dto, @RequestParam long id){
+    public ResponseEntity<?> modify(HttpServletRequest request, @RequestBody TransactionDTO dto, @RequestParam long id) {
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
 
         try {
-            TransactionEntity transaction = transactionService.modify(user,dto,id);
+            TransactionEntity transaction = transactionService.modify(user, dto, id);
             return ResponseEntity.status(HttpStatus.OK).body(transaction);
         } catch (InputTransactionException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (UnauthorizedOperationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
@@ -68,11 +92,11 @@ public class TransactionController {
     }
 
     @DeleteMapping()
-    public ResponseEntity<?> delete(HttpServletRequest request, @RequestParam long id){
+    public ResponseEntity<?> delete(HttpServletRequest request, @RequestParam long id) {
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
         try {
-            transactionService.delete(user,id);
-            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message","Elemento borrado con exito"));
+            transactionService.delete(user, id);
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Elemento borrado con exito"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (UnauthorizedOperationException e) {
