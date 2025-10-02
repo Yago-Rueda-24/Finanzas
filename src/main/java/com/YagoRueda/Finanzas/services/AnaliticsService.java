@@ -1,5 +1,6 @@
 package com.YagoRueda.Finanzas.services;
 
+import com.YagoRueda.Finanzas.DTOs.BalanceDTO;
 import com.YagoRueda.Finanzas.entities.TransactionEntity;
 import com.YagoRueda.Finanzas.entities.UserEntity;
 import com.YagoRueda.Finanzas.repositories.TransactionRepository;
@@ -24,7 +25,7 @@ public class AnaliticsService {
         this.transactionRepository = transactionRepository;
     }
 
-    public void monthlyBalance(UserEntity user, String date) {
+    public BalanceDTO monthlyBalance(UserEntity user, String date) throws IllegalArgumentException {
         int year = 0;
         int month = 0;
 
@@ -108,9 +109,13 @@ public class AnaliticsService {
 
         }
         float balance = (float) (ingresos.sum() - gastos.sum());
-        System.out.println(balance);
+        BalanceDTO dto = new BalanceDTO();
+        dto.setIncome((float) ingresos.sum());
+        dto.setExpense((float) gastos.sum());
+        dto.setNumTransactions(transactions.size());
+        dto.setBalance(balance);
 
-        transactions.forEach(System.out::println);
+        return dto;
     }
 
 
