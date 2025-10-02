@@ -1,5 +1,6 @@
 package com.YagoRueda.Finanzas.controllers;
 
+import com.YagoRueda.Finanzas.DTOs.BalanceDTO;
 import com.YagoRueda.Finanzas.entities.UserEntity;
 import com.YagoRueda.Finanzas.services.AnaliticsService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,8 +28,15 @@ public class AnaliticsController {
     public ResponseEntity<?> monthlyBalance(HttpServletRequest request, @RequestParam String date){
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
 
-        analiticsService.monthlyBalance(user,date);
+        try {
+            BalanceDTO dto = analiticsService.monthlyBalance(user,date);
+            return  ResponseEntity.status(HttpStatus.OK).body(dto);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error",e.getMessage()));
+        }
 
-        return  ResponseEntity.status(HttpStatus.OK).build();
+
+
+
     }
 }
