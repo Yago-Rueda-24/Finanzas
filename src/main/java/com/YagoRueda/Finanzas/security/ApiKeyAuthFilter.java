@@ -28,7 +28,13 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // 1. Excluir endpoints bajo /auth/**
-        if (path.startsWith("/auth/")) {
+        if (path.startsWith("/auth/")            // endpoints de login/register
+                || path.equals("/")              // raíz
+                || path.equals("/index.html")    // index
+                || path.startsWith("/css/")      // CSS
+                || path.startsWith("/js/")       // JS
+                || path.startsWith("/images/")   // imágenes
+                || path.equals("/favicon.ico")) { // icono
             filterChain.doFilter(request, response);
             return;
         }
