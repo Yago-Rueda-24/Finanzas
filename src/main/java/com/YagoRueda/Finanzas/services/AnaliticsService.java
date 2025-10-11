@@ -25,9 +25,17 @@ public class AnaliticsService {
         this.transactionRepository = transactionRepository;
     }
 
-    public BalanceDTO monthlyBalance(UserEntity user, String date) throws IllegalArgumentException {
+    /**
+     * Comprueba que la fecha de entrada introducida como String este en un formato valido, lo parsea a LocalDate y retorna un LocalDate con valor 01/MM/AAAA
+     * siendo MM y AAAA el mes y año pasado en el string
+     * @param date String que representa un mes con formato MM/AAAA
+     * @return LocalDate que representa la el primer dia del mes/Año introducidos en formato 01/MM/AAAA
+     * @throws IllegalArgumentException
+     */
+    private LocalDate validateMonthInputDate(String date) throws IllegalArgumentException {
         int year = 0;
         int month = 0;
+        LocalDate startDate;
 
         try {
 
@@ -67,15 +75,27 @@ public class AnaliticsService {
             throw new IllegalArgumentException(e.getMessage());
         }
 
+        return startDate = LocalDate.of(year, month, 1);
+    }
+
+    public BalanceDTO monthlyBalance(UserEntity user, String date) throws IllegalArgumentException {
+        LocalDate startDate;
+
+        try {
+            startDate = validateMonthInputDate(date);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+
+
         //Obtención de las transacciones del usuario
-        LocalDate startDate = LocalDate.of(year, month, 1);
+
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
         List<TransactionEntity> transactions = transactionRepository.findByUserAndDateBetween(user, startDate, endDate);
 
         //Creación de registros para sumar lso ingresos y gastos
         DoubleAdder ingresos = new DoubleAdder();
         DoubleAdder gastos = new DoubleAdder();
-
 
 
         //Calculo del número de hilos de la pool de hilos
@@ -91,7 +111,7 @@ public class AnaliticsService {
                 int start = i * sublistLength;
                 int end = (i == numHilos - 1) ? transactions.size() : start + sublistLength;
 
-               List<TransactionEntity> sublista = transactions.subList(start,end);
+                List<TransactionEntity> sublista = transactions.subList(start, end);
 
                 pool.submit(() -> {
                     for (TransactionEntity t : sublista) {
@@ -118,5 +138,9 @@ public class AnaliticsService {
         return dto;
     }
 
+    /*
+    public BalanceDTO monthlyAverageIncomeExpense(UserEntity user, String date) {
 
+    }
+*/
 }
