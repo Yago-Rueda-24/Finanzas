@@ -35,8 +35,17 @@ public class AnaliticsController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error",e.getMessage()));
         }
 
+    }
+    @GetMapping("/averageExpensePerDayOfWeeK")
+    public ResponseEntity<?> averageExpensePerDayOfWeeK(HttpServletRequest request, @RequestParam String date){
+        UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
 
-
+        try {
+            BalanceDTO dto = analiticsService.monthlyExpensePerDayofWeek(user,date);
+            return  ResponseEntity.status(HttpStatus.OK).body(dto);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error",e.getMessage()));
+        }
 
     }
 }
