@@ -1,13 +1,279 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <h1>Que tal estamos gente</h1>
+    <header class="header">
+        <div class="header-container">
+            <h1 class="header-title">Finanzas API </h1>
+            <p class="header-version">Versión 1.0.0</p>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <section id="presentacion" class="section">
+            <h2 class="section-title">Bienvenido a nuestra API</h2>
+            
+            <div class="content">
+                <p class="text-paragraph">
+                    Esta API proporciona acceso programático a nuestros servicios y datos. 
+                    Diseñada para desarrolladores que desean integrar nuestras funcionalidades 
+                    en sus aplicaciones.
+                </p>
+
+                <h3 class="subsection-title">Características principales</h3>
+                <ul class="feature-list">
+                    <li>Autenticación segura mediante tokens JWT</li>
+                    <li>Respuestas en formato JSON</li>
+                    <li>Rate limiting: 1000 peticiones por hora</li>
+                    <li>Soporte HTTPS obligatorio</li>
+                </ul>
+
+                <div class="alert alert-warning">
+                    <h3 class="alert-title">⚠️ Disclaimers Importantes</h3>
+                    <ul class="alert-list">
+                        <li><strong>Uso responsable:</strong> Esta API está destinada únicamente para uso autorizado.</li>
+                        <li><strong>Límites de uso:</strong> El abuso o uso excesivo puede resultar en la suspensión de su cuenta.</li>
+                        <li><strong>Datos sensibles:</strong> Nunca comparta sus credenciales de API con terceros.</li>
+                        <li><strong>Disponibilidad:</strong> Aunque nos esforzamos por mantener un uptime del 99.9%, no garantizamos disponibilidad continua.</li>
+                        <li><strong>Cambios:</strong> Nos reservamos el derecho de modificar o descontinuar servicios con previo aviso.</li>
+                    </ul>
+                </div>
+
+                <div class="alert alert-info">
+                    <h3 class="alert-title">📋 Requisitos previos</h3>
+                    <p class="alert-text">
+                        Para utilizar esta API necesitas una cuenta activa y una API key válida. 
+                        Si aún no tienes acceso, por favor inicia sesión a continuación para obtener tus credenciales.
+                    </p>
+                </div>
+            </div>
+        </section>
+ 
+        <section id="login" class="section">
+            <div class="login-container">
+                <h2 class="login-title">Acceso a Desarrolladores</h2>
+                
+                <form class="login-form">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email"
+                            class="form-input"
+                            placeholder="tu@email.com"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password"
+                            class="form-input"
+                            placeholder="••••••••"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="checkbox-input">
+                            <span class="checkbox-text">Recordarme</span>
+                        </label>
+                        <a href="#" class="link-forgot">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        Iniciar Sesión
+                    </button>
+                </form>
+
+                <p class="login-footer">
+                    ¿No tienes cuenta? <a href="#" class="link-register">Regístrate aquí</a>
+                </p>
+            </div>
+        </section>
+
+        <section id="documentacion" class="section">
+            <h2 class="section-title">Documentación de Endpoints</h2>
+
+         
+            <div class="doc-section">
+                <h3 class="doc-subtitle">Base URL</h3>
+                <div class="code-block">
+                    https://api.ejemplo.com/v1
+                </div>
+            </div>
+
+             
+            <div class="doc-section">
+                <h3 class="doc-subtitle">Autenticación</h3>
+                <p class="text-paragraph">Todas las peticiones requieren un token de autenticación en el header:</p>
+                <div class="code-block">
+                    Authorization: Bearer TU_API_TOKEN
+                </div>
+            </div>
+
+             
+            <div class="endpoints-container">
+                
+                 Endpoint 1: GET Users 
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-get">GET</span>
+                        <code class="endpoint-path">/users</code>
+                    </div>
+                    <p class="endpoint-description">Obtiene la lista de usuarios registrados.</p>
+                    
+                    <h4 class="endpoint-subtitle">Parámetros de consulta:</h4>
+                    <ul class="params-list">
+                        <li><code class="param-name">limit</code> - Número máximo de resultados (default: 10)</li>
+                        <li><code class="param-name">offset</code> - Número de resultados a omitir (default: 0)</li>
+                    </ul>
+
+                    <h4 class="endpoint-subtitle">Ejemplo de respuesta:</h4>
+                    <div class="code-block">
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Juan Pérez",
+      "email": "juan@ejemplo.com",
+      "created_at": "2025-01-15T10:30:00Z"
+    }
+  ],
+  "total": 100
+}
+                    </div>
+                </div>
+
+                 Endpoint 2: POST User 
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-post">POST</span>
+                        <code class="endpoint-path">/users</code>
+                    </div>
+                    <p class="endpoint-description">Crea un nuevo usuario.</p>
+                    
+                    <h4 class="endpoint-subtitle">Body (JSON):</h4>
+                    <div class="code-block">
+{
+  "name": "María García",
+  "email": "maria@ejemplo.com",
+  "password": "contraseña_segura"
+}
+                    </div>
+
+                    <h4 class="endpoint-subtitle">Ejemplo de respuesta:</h4>
+                    <div class="code-block">
+{
+  "success": true,
+  "data": {
+    "id": 101,
+    "name": "María García",
+    "email": "maria@ejemplo.com",
+    "created_at": "2025-01-15T14:20:00Z"
+  }
+}
+                    </div>
+                </div>
+
+                 Endpoint 3: PUT User 
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-put">PUT</span>
+                        <code class="endpoint-path">/users/:id</code>
+                    </div>
+                    <p class="endpoint-description">Actualiza la información de un usuario existente.</p>
+                    
+                    <h4 class="endpoint-subtitle">Body (JSON):</h4>
+                    <div class="code-block">
+{
+  "name": "María García López",
+  "email": "maria.garcia@ejemplo.com"
+}
+                    </div>
+                </div>
+
+                 Endpoint 4: DELETE User 
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method method-delete">DELETE</span>
+                        <code class="endpoint-path">/users/:id</code>
+                    </div>
+                    <p class="endpoint-description">Elimina un usuario del sistema.</p>
+                    
+                    <h4 class="endpoint-subtitle">Ejemplo de respuesta:</h4>
+                    <div class="code-block">
+{
+  "success": true,
+  "message": "Usuario eliminado correctamente"
+}
+                    </div>
+                </div>
+
+            </div>
+ 
+            <div class="doc-section">
+                <h3 class="doc-subtitle">Códigos de respuesta HTTP</h3>
+                <div class="table-container">
+                    <table class="response-table">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="code-success">200</td>
+                                <td>Petición exitosa</td>
+                            </tr>
+                            <tr>
+                                <td class="code-success">201</td>
+                                <td>Recurso creado exitosamente</td>
+                            </tr>
+                            <tr>
+                                <td class="code-warning">400</td>
+                                <td>Petición incorrecta</td>
+                            </tr>
+                            <tr>
+                                <td class="code-warning">401</td>
+                                <td>No autorizado</td>
+                            </tr>
+                            <tr>
+                                <td class="code-warning">404</td>
+                                <td>Recurso no encontrado</td>
+                            </tr>
+                            <tr>
+                                <td class="code-error">500</td>
+                                <td>Error interno del servidor</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p> Creado por Yago Rueda Carrilero</p>
+            <p class="footer-contact">Contacto <a href="mailto:ruedayago@gmail.com" class="footer-link">ruedayago@gmail.com</a></p>
+        </div>
+    </footer>
+
 </body>
 </html>
