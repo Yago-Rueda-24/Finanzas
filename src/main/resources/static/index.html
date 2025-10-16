@@ -31,29 +31,38 @@
                 <h3 class="subsection-title">Contexto</h3>
                 <p class="text-paragraph">Esta API es un proyecto no profesional, desarrollada por un estudiante de
                     Ingeniería informática para aprender sobre desarrollo de APIs y gestión de datos financieros. La API
-                    es completamente usable, está documentada y su código es público en GitHub, en el siguiente repositorio: <a
-                    href="https://github.com/Yago-Rueda-24/Finanzas"
-                    target="_blank">https://github.com/Yago-Rueda-24/Finanzas</a>. Si quieres contactarme puedes
+                    es completamente usable, está documentada y su código es público en GitHub, en el siguiente
+                    repositorio: <a href="https://github.com/Yago-Rueda-24/Finanzas"
+                        target="_blank">https://github.com/Yago-Rueda-24/Finanzas</a>. Si quieres contactarme puedes
                     hacerlo en <a href="mailto: ruedayago@gmail.com" target="_blank">ruedayago@gmail.com</a>.
                 </p>
                 <br>
-                <p class="text-paragraph"> A continuación puedes encontrar lo que ofrece la API, un disclaimer sobre su uso, y una explicación sobre como generar tu propia API KEY</p>
+                <p class="text-paragraph"> A continuación puedes encontrar lo que ofrece la API, un disclaimer sobre su
+                    uso, y una explicación sobre como generar tu propia API KEY</p>
 
                 <h3 class="subsection-title">Características principales</h3>
                 <ul class="feature-list">
-                    <li>Registro de transacciones: Permite a los usuarios registrar sus transacciones financieras con fecha y monto.</li>
-                    <li>Cálculo de métricas: La API calcula métricas útiles como gastos totales, ingresos y balances...</li>
+                    <li>Registro de transacciones: Permite a los usuarios registrar sus transacciones financieras con
+                        fecha y monto.</li>
+                    <li>Cálculo de métricas: La API calcula métricas útiles como gastos totales, ingresos y balances...
+                    </li>
                     <li>Generación de informes: Los usuarios pueden generar informes sobre su historial financiero.</li>
                 </ul>
 
                 <div class="alert alert-warning">
                     <h3 class="alert-title">⚠️ Disclaimers Importantes</h3>
                     <ul class="alert-list">
-                        <li><strong>Uso responsable:</strong> El uso de esta API es gratuito, pero no está recomendado para su uso en producción.
+                        <li><strong>Uso responsable:</strong> El uso de esta API es gratuito, pero no está recomendado
+                            para su uso en producción.
                         </li>
-                        <li><strong>Consumo de la API:</strong> Esta API no cuenta con los requisitos, técnicos, de seguridad y legales para ser usada en un servicio. 
-                            Tampoco se recomienda introducir datos bancarios reales por la misma razón. Si se sospecha que un usuario esta utilizando datos reales, se borraran de la base de datos para evitar problemas legales</li>
-                        <li><strong>Disponibilidad:</strong> La API está hosteada en un servicio gratuito de baja prioridad, por ello, algunas peticiones pueden tener unos tiempos de respuesta elevados.</li>
+                        <li><strong>Consumo de la API:</strong> Esta API no cuenta con los requisitos, técnicos, de
+                            seguridad y legales para ser usada en un servicio.
+                            Tampoco se recomienda introducir datos bancarios reales por la misma razón. Si se sospecha
+                            que un usuario esta utilizando datos reales, se borraran de la base de datos para evitar
+                            problemas legales</li>
+                        <li><strong>Disponibilidad:</strong> La API está hosteada en un servicio gratuito de baja
+                            prioridad, por ello, algunas peticiones pueden tener unos tiempos de respuesta elevados.
+                        </li>
                     </ul>
                 </div>
 
@@ -61,7 +70,9 @@
                     <h3 class="alert-title">📋 Requisitos previos</h3>
                     <p class="alert-text">
                         Para utilizar esta API necesitas una API key válida.
-                        Si aún no tienes acceso, por favor inicia sesión a continuación. Crea una cuenta si no tienes una y utiliza esas credenciales para generar una API KEY. En caso de necesitar otra, puedes utilizar
+                        Si aún no tienes acceso, por favor inicia sesión a continuación. Crea una cuenta si no tienes
+                        una y utiliza esas credenciales para generar una API KEY. En caso de necesitar otra, puedes
+                        utilizar
                         tus credenciales para generar tantas como necesites, pero las anteriores dejarán de ser válidas.
                     </p>
                 </div>
@@ -75,8 +86,7 @@
                 <form class="login-form">
                     <div class="form-group">
                         <label for="text" class="form-label">Username</label>
-                        <input type="text" id="text" name="text" class="form-input" placeholder="tu_usuario"
-                            required>
+                        <input type="text" id="text" name="text" class="form-input" placeholder="tu_usuario" required>
                     </div>
 
                     <div class="form-group">
@@ -88,7 +98,8 @@
                     <div class="form-options">
                         <label class="checkbox-label">
                             <input type="checkbox" class="checkbox-input">
-                            <span id="CheckBoxLegal" class="checkbox-text">Estoy de acuerdo con los <a href=""> términos y Condiciones </a></span>
+                            <span id="CheckBoxLegal" class="checkbox-text">Estoy de acuerdo con los <a href="#Legal"> términos
+                                    y Condiciones </a></span>
                         </label>
                     </div>
 
@@ -260,6 +271,40 @@
                     </table>
                 </div>
             </div>
+        </section>
+
+        <section id="Legal" class="section">
+            <h2 class="section-title">Terminos y Condiciones</h2>
+
+            <div class="content">
+                <p class="text-paragraph">
+                    Aviso legal y condiciones de uso
+
+                </p>
+                <p class="text-paragraph">
+                    Este servicio es un proyecto experimental desarrollado con fines educativos por Yago Rueda Carrilero.
+                    No se recomienda su uso en entornos de producción ni para fines comerciales.
+                    Los datos enviados (fecha e importe de transacciones) se utilizan únicamente para cálculo
+                    estadístico y no deben contener información personal.
+                </p>
+                <p class="text-paragraph">
+                    El servicio y el código se ofrecen "tal cual" (as is), sin garantía de disponibilidad, continuidad
+                    ni correcto funcionamiento.
+                    El proveedor no asume responsabilidad por pérdidas o daños derivados del uso del servicio o de los
+                    datos procesados.
+                    El acceso a la API puede suspenderse, modificarse o eliminarse en cualquier momento sin previo
+                    aviso.
+                </p>
+                <p class="text-paragraph">
+                    El usuario garantiza que dispone de derechos sobre los datos que introduce y que su uso cumple la
+                    legislación aplicable.
+                    El acceso y uso de esta API implica la aceptación de estas condiciones.
+                    Ley aplicable: España.
+                </p>
+
+            </div>
+
+
         </section>
 
     </main>
