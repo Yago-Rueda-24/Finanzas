@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Documentation</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/funciones.js" defer></script>
 </head>
 
 <body>
@@ -69,12 +70,12 @@
 
         <section id="login" class="section">
             <div class="login-container">
-                <h2 class="login-title">Acceso a Desarrolladores</h2>
-
+                <h2 class="login-title">Creación de cuenta</h2>
+                <p class="text-paragraph"> Se recomienda no utilizar datos personales reales para el username.</p>
                 <form class="login-form">
                     <div class="form-group">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" id="email" name="email" class="form-input" placeholder="tu@email.com"
+                        <label for="text" class="form-label">Username</label>
+                        <input type="text" id="text" name="text" class="form-input" placeholder="tu_usuario"
                             required>
                     </div>
 
@@ -87,19 +88,15 @@
                     <div class="form-options">
                         <label class="checkbox-label">
                             <input type="checkbox" class="checkbox-input">
-                            <span class="checkbox-text">Recordarme</span>
+                            <span id="CheckBoxLegal" class="checkbox-text">Estoy de acuerdo con los <a href=""> términos y Condiciones </a></span>
                         </label>
-                        <a href="#" class="link-forgot">¿Olvidaste tu contraseña?</a>
                     </div>
 
-                    <button type="submit" class="btn-submit">
+                    <button id="ButtonLogin" type="submit" class="btn-submit" disabled>
                         Iniciar Sesión
                     </button>
                 </form>
 
-                <p class="login-footer">
-                    ¿No tienes cuenta? <a href="#" class="link-register">Regístrate aquí</a>
-                </p>
             </div>
         </section>
 
