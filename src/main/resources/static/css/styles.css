@@ -141,6 +141,12 @@ body {
     font-size: 0.875rem;
 }
 
+.errorText{
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
 .alert-warning .alert-text {
     color: #a16207;
 }

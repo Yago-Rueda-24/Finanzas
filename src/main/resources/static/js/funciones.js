@@ -1,9 +1,11 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const checkbox = document.getElementById("CheckBoxLegal");
-  const boton = document.getElementById("ButtonLogin");
+document.querySelector('.errorText').style.display = 'none';
 
-  checkbox.addEventListener("change", () => {
-    boton.disabled = !checkbox.checked;
-    console.log("Checkbox state changed:", checkbox.checked);
-  });
+document.getElementById('ButtonLogin').addEventListener('click', function(event) {
+    var checkbox = document.getElementById('CheckBoxLegal');
+    if (!checkbox.checked) {
+        event.preventDefault();
+        document.querySelector('.errorText').style.display = 'block';
+    }
+
+    
 });
