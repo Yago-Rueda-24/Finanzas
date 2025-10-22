@@ -82,7 +82,8 @@
         <section id="login" class="section">
             <div class="login-container">
                 <h2 class="login-title">Creación de cuenta</h2>
-                <p class="text-paragraph">Creando una cuenta podras generar todas las Keys que necesites.</p>
+                <p class="text-paragraph" style="text-align: center">Creando cuenta podras generar todas las Keys que
+                    necesites.</p>
                 <form class="login-form">
                     <div class="form-group">
                         <label for="text" class="form-label">Username</label>
@@ -98,12 +99,12 @@
                     <div class="form-options">
                         <label class="checkbox-label">
                             <input type="checkbox" class="checkbox-input" id="CheckBoxLegal">
-                            <span  class="checkbox-text">Estoy de acuerdo con los <a href="#Legal"> términos
+                            <span class="checkbox-text">Estoy de acuerdo con los <a href="#Legal"> términos
                                     y Condiciones </a></span>
                         </label>
                     </div>
 
-                    <p class="errorText" id="terms" >Es obligatorio aceptar los términos y condiciones.</p>
+                    <p class="errorText" id="terms">Es obligatorio aceptar los términos y condiciones.</p>
 
                     <button id="ButtonLogin" class="btn-submit">
                         Iniciar Sesión
@@ -112,6 +113,39 @@
 
                 <p class="errorText" id="error"></p>
                 <p class="text-paragraph" id="sucess_text">El usuario se ha creado con éxito</p>
+
+            </div>
+        </section>
+
+        <section id="apikey" class="section">
+            <div class="login-container">
+                <h2 class="login-title">Generación de APIKey</h2>
+                <p class="text-paragraph" style="text-align: center">Puedes generar todas las Apikeys que necesites,
+                    pero con la creacion de una nueva apikey se invalidan las anteriores</p>
+                <form class="login-form">
+                    <div class="form-group">
+                        <label for="text" class="form-label">Username</label>
+                        <input type="text" id="text_generate" name="text" class="form-input" placeholder="tu_usuario"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" id="password_generate" name="password" class="form-input"
+                            placeholder="••••••••" required>
+                    </div>
+
+
+                    <button id="ButtonGenerate" class="btn-submit">
+                        Generar APIKey
+                    </button>
+                </form>
+
+                <p class="errorText" id="error_generate"></p>
+                <div class="generate-key-div" id="div_APIKEY">
+                    <p class="apikey" id="generate_text" >asdsad</p>
+                </div>
+
 
             </div>
         </section>
@@ -287,7 +321,8 @@
 
                 </p>
                 <p class="text-paragraph">
-                    Este servicio es un proyecto experimental desarrollado con fines educativos por Yago Rueda Carrilero.
+                    Este servicio es un proyecto experimental desarrollado con fines educativos por Yago Rueda
+                    Carrilero.
                     No se recomienda su uso en entornos de producción ni para fines comerciales.
                     Los datos enviados (fecha e importe de transacciones) se utilizan únicamente para cálculo
                     estadístico y no deben contener información personal.

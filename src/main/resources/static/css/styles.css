@@ -4,8 +4,9 @@
     padding: 0;
     box-sizing: border-box;
 }
+
 html {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
 
@@ -72,7 +73,8 @@ body {
     line-height: 1.625;
     margin-bottom: 1rem;
 }
-.subtext{
+
+.subtext {
     color: #6b7280;
     font-size: 0.875rem;
     margin-bottom: 1rem;
@@ -146,7 +148,7 @@ body {
     font-size: 0.875rem;
 }
 
-.errorText{
+.errorText {
     color: #dc2626;
     font-size: 0.875rem;
     margin-top: 0.25rem;
@@ -213,6 +215,24 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.generate-key-div {
+
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+    height: 3rem;
+    margin-top: 1rem;
+    background-color: #75787c;
+    border-radius: 16px;
+}
+
+.apikey{
+    font-size: 1rem;
+    font-weight: normal;
+    color: #f0f0f0;
 }
 
 .checkbox-label {
