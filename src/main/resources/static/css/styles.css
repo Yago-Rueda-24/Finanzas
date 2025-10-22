@@ -72,6 +72,11 @@ body {
     line-height: 1.625;
     margin-bottom: 1rem;
 }
+.subtext{
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
 
 .subsection-title {
     font-size: 1.25rem;
