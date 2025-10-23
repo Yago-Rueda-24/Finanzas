@@ -31,7 +31,7 @@ document.getElementById('ButtonLogin').addEventListener('click', function (event
 
 async function registerUser(username, password) {
     try {
-        const response = await fetch('http://localhost:8080/auth/register', {
+        const response = await fetch('/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -76,7 +76,7 @@ document.getElementById('ButtonGenerate').addEventListener('click', function (ev
 
 async function generateKey(username, password) {
     try {
-        const response = await fetch('http://localhost:8080/auth/generate', {
+        const response = await fetch('/auth/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
