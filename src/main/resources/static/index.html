@@ -157,7 +157,7 @@
             <div class="doc-section">
                 <h3 class="doc-subtitle">Base URL</h3>
                 <div class="code-block">
-                    https://api.ejemplo.com/v1
+                    https://finanzas-lv2n.onrender.com
                 </div>
             </div>
 
@@ -170,106 +170,14 @@
                 </div>
             </div>
 
-
-            <div class="endpoints-container">
-
-                Endpoint 1: GET Users
-                <div class="endpoint">
-                    <div class="endpoint-header">
-                        <span class="method method-get">GET</span>
-                        <code class="endpoint-path">/users</code>
-                    </div>
-                    <p class="endpoint-description">Obtiene la lista de usuarios registrados.</p>
-
-                    <h4 class="endpoint-subtitle">Parámetros de consulta:</h4>
-                    <ul class="params-list">
-                        <li><code class="param-name">limit</code> - Número máximo de resultados (default: 10)</li>
-                        <li><code class="param-name">offset</code> - Número de resultados a omitir (default: 0)</li>
-                    </ul>
-
-                    <h4 class="endpoint-subtitle">Ejemplo de respuesta:</h4>
-                    <div class="code-block">
-                        {
-                        "success": true,
-                        "data": [
-                        {
-                        "id": 1,
-                        "name": "Juan Pérez",
-                        "email": "juan@ejemplo.com",
-                        "created_at": "2025-01-15T10:30:00Z"
-                        }
-                        ],
-                        "total": 100
-                        }
-                    </div>
-                </div>
-
-                Endpoint 2: POST User
-                <div class="endpoint">
-                    <div class="endpoint-header">
-                        <span class="method method-post">POST</span>
-                        <code class="endpoint-path">/users</code>
-                    </div>
-                    <p class="endpoint-description">Crea un nuevo usuario.</p>
-
-                    <h4 class="endpoint-subtitle">Body (JSON):</h4>
-                    <div class="code-block">
-                        {
-                        "name": "María García",
-                        "email": "maria@ejemplo.com",
-                        "password": "contraseña_segura"
-                        }
-                    </div>
-
-                    <h4 class="endpoint-subtitle">Ejemplo de respuesta:</h4>
-                    <div class="code-block">
-                        {
-                        "success": true,
-                        "data": {
-                        "id": 101,
-                        "name": "María García",
-                        "email": "maria@ejemplo.com",
-                        "created_at": "2025-01-15T14:20:00Z"
-                        }
-                        }
-                    </div>
-                </div>
-
-                Endpoint 3: PUT User
-                <div class="endpoint">
-                    <div class="endpoint-header">
-                        <span class="method method-put">PUT</span>
-                        <code class="endpoint-path">/users/:id</code>
-                    </div>
-                    <p class="endpoint-description">Actualiza la información de un usuario existente.</p>
-
-                    <h4 class="endpoint-subtitle">Body (JSON):</h4>
-                    <div class="code-block">
-                        {
-                        "name": "María García López",
-                        "email": "maria.garcia@ejemplo.com"
-                        }
-                    </div>
-                </div>
-
-                Endpoint 4: DELETE User
-                <div class="endpoint">
-                    <div class="endpoint-header">
-                        <span class="method method-delete">DELETE</span>
-                        <code class="endpoint-path">/users/:id</code>
-                    </div>
-                    <p class="endpoint-description">Elimina un usuario del sistema.</p>
-
-                    <h4 class="endpoint-subtitle">Ejemplo de respuesta:</h4>
-                    <div class="code-block">
-                        {
-                        "success": true,
-                        "message": "Usuario eliminado correctamente"
-                        }
-                    </div>
-                </div>
-
+            <div class="doc-section">
+                <h3 class="doc-subtitle">Endpoints</h3>
+                <p class="text-paragraph">Puedes consultar la documentación de los endpoints en el siguiente enlace:</p>
+                <a href="/swagger-ui/index.html" target="_blank" > Documentación Endpoints</a>
             </div>
+
+
+            
 
             <div class="doc-section">
                 <h3 class="doc-subtitle">Códigos de respuesta HTTP</h3>
