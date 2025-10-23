@@ -7,6 +7,11 @@ import com.YagoRueda.Finanzas.exceptions.ErrorCsvException;
 import com.YagoRueda.Finanzas.exceptions.InputTransactionException;
 import com.YagoRueda.Finanzas.exceptions.UnauthorizedOperationException;
 import com.YagoRueda.Finanzas.services.TransactionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +23,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/transaction")
+@Tag(name = "Transacciones", description = "Operaciones sobre transacciones")
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -61,6 +67,12 @@ public class TransactionController {
     }
 
 
+    @Operation(summary = "Crear una transaccion",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Transacción creada",
+                            content = @Content(schema = @Schema(implementation = TransactionDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Error al crear la transacción")
+            })
     @PostMapping()
     public ResponseEntity<?> create(HttpServletRequest request, @RequestBody TransactionDTO dto) {
 

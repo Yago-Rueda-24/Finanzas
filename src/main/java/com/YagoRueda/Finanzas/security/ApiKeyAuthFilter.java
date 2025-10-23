@@ -30,7 +30,13 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
         // 1. Excluir endpoints bajo /auth/**
         if (path.startsWith("/auth/")            // endpoints de login/register
                 || path.equals("/")              // raíz
-                || path.equals("/index.html")    // index
+                || path.equals("/index.html")// index
+                || path.startsWith("/swagger-ui") //carpeta de swagger
+                || path.startsWith("/swagger-ui/") //carpeta de swagger
+                || path.equals("/swagger-ui.html")// swagger
+                || path.startsWith("/api-docs")   // documentación OpenAPI
+                || path.startsWith("/v3/api-docs") // ruta por defecto de OpenAPI 3
+                || path.startsWith("/webjars/")   // recursos estáticos de swagger-ui
                 || path.startsWith("/css/")      // CSS
                 || path.startsWith("/js/")       // JS
                 || path.startsWith("/images/")   // imágenes
