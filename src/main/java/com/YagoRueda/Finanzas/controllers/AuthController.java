@@ -4,6 +4,7 @@ import com.YagoRueda.Finanzas.DTOs.UserDTO;
 import com.YagoRueda.Finanzas.entities.ApiKeyEntity;
 import com.YagoRueda.Finanzas.entities.UserEntity;
 import com.YagoRueda.Finanzas.services.AuthService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@Hidden
 public class AuthController {
 
     private final AuthService authService;
