@@ -32,6 +32,11 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
+    @Operation(summary = "Registra una serie de transacciones anotadas en un CSV",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Transacción modificada correctamente"),
+                    @ApiResponse(responseCode = "400", description = "Error al crear la transacción")
+            })
     @PostMapping("/upload")
     public ResponseEntity<?> uploadCsv(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
@@ -47,7 +52,11 @@ public class TransactionController {
                     .body("Error procesando archivo: " + e.getMessage());
         }
     }
-
+    @Operation(summary = "Valida el formato de todas las transacciones del CSV y avisa en caso de encontrar algun error de formato en una transacción ",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Transacción modificada correctamente"),
+                    @ApiResponse(responseCode = "400", description = "Error al crear la transacción")
+            })
     @PostMapping("/validate")
     public ResponseEntity<?> validateCsv(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
@@ -67,7 +76,7 @@ public class TransactionController {
     }
 
 
-    @Operation(summary = "Crear una transaccion",
+    @Operation(summary = "Crea una transaccion",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Transacción creada",
                             content = @Content(schema = @Schema(implementation = TransactionDTO.class))),
@@ -86,6 +95,13 @@ public class TransactionController {
         }
     }
 
+    @Operation(summary = "Modifica una transaccion",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Transacción modificada correctamente",
+                            content = @Content(schema = @Schema(implementation = TransactionDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Error al modificar la transacción"),
+                    @ApiResponse(responseCode = "401", description = "sin autorización para modificar la transacción")
+            })
     @PutMapping()
     public ResponseEntity<?> modify(HttpServletRequest request, @RequestBody TransactionDTO dto, @RequestParam long id) {
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
@@ -103,6 +119,13 @@ public class TransactionController {
 
     }
 
+    @Operation(summary = "Elimina una transaccion",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Transacción eliminada correctamente",
+                            content = @Content(schema = @Schema(implementation = TransactionDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Error al eliminar la transacción"),
+                    @ApiResponse(responseCode = "401", description = "sin autorización para eliminar la transacción")
+            })
     @DeleteMapping()
     public ResponseEntity<?> delete(HttpServletRequest request, @RequestParam long id) {
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
