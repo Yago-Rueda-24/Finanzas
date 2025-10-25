@@ -3,6 +3,9 @@ package com.YagoRueda.Finanzas.DTOs;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BalanceDTO {
 
     @Getter
@@ -20,5 +23,9 @@ public class BalanceDTO {
     @Getter
     @Setter
     private float balance;
+
+    @Getter
+    @Setter
+    private List<Float> AverageExpensePerDayofWeek;
 
 }
