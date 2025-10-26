@@ -86,4 +86,16 @@ public class AnaliticsController {
         }
 
     }
+
+    @GetMapping("/topIncome")
+    public ResponseEntity<?> topIncome(HttpServletRequest request, @RequestParam String date , @RequestParam int num) {
+        UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
+
+        try {
+            BalanceDTO dto = analiticsService.monthlyTopIncome(user, date,num);
+            return ResponseEntity.status(HttpStatus.OK).body(dto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        }
+    }
 }
