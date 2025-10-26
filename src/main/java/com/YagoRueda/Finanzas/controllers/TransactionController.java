@@ -8,6 +8,7 @@ import com.YagoRueda.Finanzas.exceptions.InputTransactionException;
 import com.YagoRueda.Finanzas.exceptions.UnauthorizedOperationException;
 import com.YagoRueda.Finanzas.services.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,12 +34,19 @@ public class TransactionController {
     }
 
     @Operation(summary = "Registra una serie de transacciones anotadas en un CSV",
+            description = "Utiliza un archivo CSV de entrada con la información de todas las transacciones que se quiera importar. Se debe usar la plantilla que se puede encontar en la documentación",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Transacción modificada correctamente"),
-                    @ApiResponse(responseCode = "400", description = "Error al crear la transacción")
+                    @ApiResponse(responseCode = "200", description = "Transacción modificada correctamente",
+                            content = @Content(mediaType = "application/text", schema = @Schema(example = "Archivo procesado correctamente"))),
+                    @ApiResponse(responseCode = "400", description = "Error al crear la transacción",
+                            content = @Content(mediaType = "application/text", schema = @Schema(example = "Error procesando archivo: Error")))
             })
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadCsv(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadCsv(HttpServletRequest request, @Parameter(
+            description = "Fichero con las transacciones",
+            required = true,
+            content = @Content(mediaType = "text/csv")
+    ) @RequestParam("file") MultipartFile file) {
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
 
         try {
@@ -52,10 +60,14 @@ public class TransactionController {
                     .body("Error procesando archivo: " + e.getMessage());
         }
     }
-    @Operation(summary = "Valida el formato de todas las transacciones del CSV y avisa en caso de encontrar algun error de formato en una transacción ",
+
+    @Operation(summary = "Valida una serie de transacciones anotadas en un CSV",
+            description = "Utiliza un archivo CSV de entrada con la información de todas las transacciones que se quiera validar. Se debe usar la plantilla que se puede encontar en la documentación",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Transacción modificada correctamente"),
-                    @ApiResponse(responseCode = "400", description = "Error al crear la transacción")
+                    @ApiResponse(responseCode = "200", description = "Transacción modificada correctamente",
+                            content = @Content(mediaType = "application/text", schema = @Schema(example = "Archivo validado correctamente"))),
+                    @ApiResponse(responseCode = "400", description = "Error al crear la transacción",
+                            content = @Content(mediaType = "application/text", schema = @Schema(example = "Error procesando archivo: Error")))
             })
     @PostMapping("/validate")
     public ResponseEntity<?> validateCsv(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
@@ -79,8 +91,9 @@ public class TransactionController {
     @Operation(summary = "Crea una transaccion",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Transacción creada",
-                            content = @Content(schema = @Schema(implementation = TransactionDTO.class))),
-                    @ApiResponse(responseCode = "400", description = "Error al crear la transacción")
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = TransactionDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Error al crear la transacción",
+                            content = @Content(mediaType = "application/json", schema = @Schema(example = "{campo_con_error: error encontrado}")))
             })
     @PostMapping()
     public ResponseEntity<?> create(HttpServletRequest request, @RequestBody TransactionDTO dto) {
@@ -98,8 +111,9 @@ public class TransactionController {
     @Operation(summary = "Modifica una transaccion",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Transacción modificada correctamente",
-                            content = @Content(schema = @Schema(implementation = TransactionDTO.class))),
-                    @ApiResponse(responseCode = "400", description = "Error al modificar la transacción"),
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = TransactionDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Error al modificar la transacción"
+                            , content = @Content(mediaType = "application/json", schema = @Schema(example = "{campo_con_error: error encontrado}"))),
                     @ApiResponse(responseCode = "401", description = "sin autorización para modificar la transacción")
             })
     @PutMapping()
@@ -122,12 +136,18 @@ public class TransactionController {
     @Operation(summary = "Elimina una transaccion",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Transacción eliminada correctamente",
-                            content = @Content(schema = @Schema(implementation = TransactionDTO.class))),
-                    @ApiResponse(responseCode = "400", description = "Error al eliminar la transacción"),
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = TransactionDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Error al eliminar la transacción",
+                            content = @Content(mediaType = "application/json", schema = @Schema(example = "{campo_con_error: error encontrado}"))),
                     @ApiResponse(responseCode = "401", description = "sin autorización para eliminar la transacción")
             })
     @DeleteMapping()
-    public ResponseEntity<?> delete(HttpServletRequest request, @RequestParam long id) {
+    public ResponseEntity<?> delete(HttpServletRequest request, @Parameter(
+            description = "id de la transacción a eliminar",
+            required = true,
+            content = @Content(mediaType = "text/plain"),
+            example = "1"
+    ) @RequestParam long id) {
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
         try {
             transactionService.delete(user, id);
