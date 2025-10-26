@@ -32,4 +32,8 @@ public class BalanceDTO {
     @Setter
     private List<TransactionDTO> TopIncome;
 
+    @Getter
+    @Setter
+    private List<TransactionDTO> TopOutcome;
+
 }
