@@ -87,24 +87,63 @@ public class AnaliticsController {
 
     }
 
+    @Operation(summary = "Calcula el top de transacciones de ingreso",
+            description = "Calcula el top de transacciones de ingreso para un determinado mes, se puede usar el parametro `num` para indicar el número de transacciones que se " +
+                    "deben introducir en el top. El parametro `date` tiene el formato`mm/yyyy` y el parametro `num` debe ser mayor que 1",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Valores calculados correctamente",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = BalanceDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Error al calcular los valores",
+                            content = @Content(mediaType = "application/json", schema = @Schema(example = "{ error: mensaje de error}")))
+            }
+
+    )
     @GetMapping("/topIncome")
-    public ResponseEntity<?> topIncome(HttpServletRequest request, @RequestParam String date , @RequestParam int num) {
+    public ResponseEntity<?> topIncome(HttpServletRequest request, @Parameter(
+            description = "Fecha en formato mm/yyyy",
+            required = true,
+            example = "09/2025"
+    )
+    @RequestParam String date, @Parameter(
+            description = "Número positivo de registros a mostrar",
+            required = true,
+            example = "4"
+    ) @RequestParam int num) {
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
 
         try {
-            BalanceDTO dto = analiticsService.monthlyTopIncome(user, date,num);
+            BalanceDTO dto = analiticsService.monthlyTopIncome(user, date, num);
             return ResponseEntity.status(HttpStatus.OK).body(dto);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
         }
     }
 
+    @Operation(summary = "Calcula el top de transacciones de gasto",
+            description = "Calcula el top de transacciones de gasto para un determinado mes, se puede usar el parametro `num` para indicar el número de transacciones que se " +
+                    "deben introducir en el top. El parametro `date` tiene el formato`mm/yyyy` y el parametro `num` debe ser mayor que 1",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Valores calculados correctamente",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = BalanceDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Error al calcular los valores",
+                            content = @Content(mediaType = "application/json", schema = @Schema(example = "{ error: mensaje de error}")))
+            }
+
+    )
     @GetMapping("/topExpense")
-    public ResponseEntity<?> topExpense(HttpServletRequest request, @RequestParam String date , @RequestParam int num) {
+    public ResponseEntity<?> topExpense(HttpServletRequest request,@Parameter(
+            description = "Fecha en formato mm/yyyy",
+            required = true,
+            example = "09/2025"
+    ) @RequestParam String date,@Parameter(
+            description = "Número positivo de registros a mostrar",
+            required = true,
+            example = "4"
+    ) @RequestParam int num) {
         UserEntity user = (UserEntity) request.getAttribute("authenticatedUser");
 
         try {
-            BalanceDTO dto = analiticsService.monthlyTopExpense(user, date,num);
+            BalanceDTO dto = analiticsService.monthlyTopExpense(user, date, num);
             return ResponseEntity.status(HttpStatus.OK).body(dto);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
