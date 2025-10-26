@@ -1,5 +1,6 @@
 package com.YagoRueda.Finanzas.entities;
 
+import com.YagoRueda.Finanzas.DTOs.TransactionDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,5 +54,18 @@ public class TransactionEntity {
                 ", date=" + date +
                 ", created_at=" + created_at +
                 '}';
+    }
+
+    public TransactionDTO toDTO(){
+        TransactionDTO dto = new TransactionDTO();
+        dto.setId(this.id);
+        dto.setDate(this.date);
+        dto.setAmount(this.amount);
+        dto.setCategory(this.category);
+        dto.setCreated_at(this.created_at);
+        dto.setDescription(this.description);
+
+        return dto;
+
     }
 }
