@@ -261,7 +261,7 @@ public class AnaliticsService {
                 .toList();
 
         BalanceDTO dto = new BalanceDTO();
-        dto.setTopIncome(dtoList);
+        dto.setTopOutcome(dtoList);
         return dto;
 
 
