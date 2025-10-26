@@ -28,4 +28,8 @@ public class BalanceDTO {
     @Setter
     private List<Float> AverageExpensePerDayofWeek;
 
+    @Getter
+    @Setter
+    private List<TransactionDTO> TopIncome;
+
 }
