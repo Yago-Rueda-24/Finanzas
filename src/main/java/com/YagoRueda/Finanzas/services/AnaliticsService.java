@@ -241,4 +241,30 @@ public class AnaliticsService {
 
     }
 
+    public BalanceDTO monthlyTopExpense(UserEntity user, String date, int topnum) {
+        LocalDate startDate;
+        try {
+            startDate = validateMonthInputDate(date);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+        if (topnum < 1) {
+            throw new IllegalArgumentException("La cantidad de transacciones en el top debe ser mayor que 0");
+        }
+
+        PageRequest limit = PageRequest.of(0, topnum);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        List<TransactionEntity> transactions = transactionRepository.findTopExpense(user, startDate, endDate, limit);
+
+        List<TransactionDTO> dtoList = transactions.stream()
+                .map(TransactionEntity::toDTO)
+                .toList();
+
+        BalanceDTO dto = new BalanceDTO();
+        dto.setTopIncome(dtoList);
+        return dto;
+
+
+    }
+
 }
