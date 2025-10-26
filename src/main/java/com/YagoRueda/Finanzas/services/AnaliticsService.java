@@ -1,13 +1,16 @@
 package com.YagoRueda.Finanzas.services;
 
 import com.YagoRueda.Finanzas.DTOs.BalanceDTO;
+import com.YagoRueda.Finanzas.DTOs.TransactionDTO;
 import com.YagoRueda.Finanzas.entities.TransactionEntity;
 import com.YagoRueda.Finanzas.entities.UserEntity;
 import com.YagoRueda.Finanzas.repositories.TransactionRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -16,6 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.stream.Collectors;
 
 @Service
 public class AnaliticsService {
@@ -200,15 +204,41 @@ public class AnaliticsService {
 
 
         BalanceDTO dto = new BalanceDTO();
-        for(int i =0;i<weekExpense.size();i++){
+        for (int i = 0; i < weekExpense.size(); i++) {
             DayOfWeek day = DayOfWeek.values()[i];
-            int numdays = daysOfWeekInMonth(startDate,day);
-            weekExpense.set(i,weekExpense.get(i)/numdays);
+            int numdays = daysOfWeekInMonth(startDate, day);
+            weekExpense.set(i, weekExpense.get(i) / numdays);
         }
 
         dto.setAverageExpensePerDayofWeek(weekExpense);
 
         return dto;
+    }
+
+    public BalanceDTO monthlyTopIncome(UserEntity user, String date, int topnum) {
+        LocalDate startDate;
+        try {
+            startDate = validateMonthInputDate(date);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+        if (topnum < 1) {
+            throw new IllegalArgumentException("La cantidad de transacciones en el top debe ser mayor que 0");
+        }
+
+        PageRequest limit = PageRequest.of(0, topnum);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        List<TransactionEntity> transactions = transactionRepository.findTopIncome(user, startDate, endDate, limit);
+
+        List<TransactionDTO> dtoList = transactions.stream()
+                .map(TransactionEntity::toDTO)
+                .toList();
+
+        BalanceDTO dto = new BalanceDTO();
+        dto.setTopIncome(dtoList);
+        return dto;
+
+
     }
 
 }
