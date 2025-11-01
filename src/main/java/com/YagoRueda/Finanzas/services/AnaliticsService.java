@@ -117,6 +117,9 @@ public class AnaliticsService {
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
         List<TransactionEntity> transactions = transactionRepository.findByUserAndDateBetween(user, startDate, endDate);
 
+        if(transactions.isEmpty()){
+            throw new IllegalArgumentException("No tienes ninguna transaction guardada en este periodo de fechas");
+        }
         //Creación de registros para sumar lso ingresos y gastos
         DoubleAdder ingresos = new DoubleAdder();
         DoubleAdder gastos = new DoubleAdder();
@@ -173,6 +176,9 @@ public class AnaliticsService {
 
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
         List<TransactionEntity> transactions = transactionRepository.findByUserAndDateBetween(user, startDate, endDate);
+        if(transactions.isEmpty()){
+            throw new IllegalArgumentException("No tienes ninguna transaction guardada en este periodo de fechas");
+        }
 
         List<Float> weekExpense = Collections.synchronizedList(new ArrayList<>(Arrays.asList(0f, 0f, 0f, 0f, 0f, 0f, 0f)));
 
@@ -215,7 +221,7 @@ public class AnaliticsService {
         return dto;
     }
 
-    public BalanceDTO monthlyTopIncome(UserEntity user, String date, int topnum) {
+    public BalanceDTO monthlyTopIncome(UserEntity user, String date, int topnum) throws IllegalArgumentException {
         LocalDate startDate;
         try {
             startDate = validateMonthInputDate(date);
@@ -230,6 +236,10 @@ public class AnaliticsService {
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
         List<TransactionEntity> transactions = transactionRepository.findTopIncome(user, startDate, endDate, limit);
 
+        if(transactions.isEmpty()){
+            throw new IllegalArgumentException("No tienes ninguna transaction guardada en este periodo de fechas");
+        }
+
         List<TransactionDTO> dtoList = transactions.stream()
                 .map(TransactionEntity::toDTO)
                 .toList();
@@ -241,7 +251,7 @@ public class AnaliticsService {
 
     }
 
-    public BalanceDTO monthlyTopExpense(UserEntity user, String date, int topnum) {
+    public BalanceDTO monthlyTopExpense(UserEntity user, String date, int topnum) throws IllegalArgumentException {
         LocalDate startDate;
         try {
             startDate = validateMonthInputDate(date);
@@ -255,6 +265,10 @@ public class AnaliticsService {
         PageRequest limit = PageRequest.of(0, topnum);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
         List<TransactionEntity> transactions = transactionRepository.findTopExpense(user, startDate, endDate, limit);
+
+        if(transactions.isEmpty()){
+            throw new IllegalArgumentException("No tienes ninguna transaction guardada en este periodo de fechas");
+        }
 
         List<TransactionDTO> dtoList = transactions.stream()
                 .map(TransactionEntity::toDTO)
