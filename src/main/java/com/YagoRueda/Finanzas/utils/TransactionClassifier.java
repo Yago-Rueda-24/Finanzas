@@ -1,4 +1,4 @@
-package com.YagoRueda.Finanzas.services;
+package com.YagoRueda.Finanzas.utils;
 
 import ai.onnxruntime.*;
 
