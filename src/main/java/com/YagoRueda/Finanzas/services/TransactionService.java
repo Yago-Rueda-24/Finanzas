@@ -7,6 +7,7 @@ import com.YagoRueda.Finanzas.exceptions.ErrorCsvException;
 import com.YagoRueda.Finanzas.exceptions.InputTransactionException;
 import com.YagoRueda.Finanzas.exceptions.UnauthorizedOperationException;
 import com.YagoRueda.Finanzas.repositories.TransactionRepository;
+import jakarta.transaction.Transactional;
 import org.apache.catalina.User;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -174,6 +175,7 @@ public class TransactionService {
         }
     }
 
+    @Transactional
     public void processCsv(UserEntity owner, MultipartFile file) throws IOException, IllegalArgumentException, ErrorCsvException {
 
         List<Long> errors = validateCsv(file);
