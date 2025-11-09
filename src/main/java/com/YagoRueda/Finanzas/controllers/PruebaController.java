@@ -2,7 +2,7 @@ package com.YagoRueda.Finanzas.controllers;
 
 import ai.onnxruntime.OrtException;
 import com.YagoRueda.Finanzas.entities.UserEntity;
-import com.YagoRueda.Finanzas.services.TransactionClassifier;
+import com.YagoRueda.Finanzas.utils.TransactionClassifier;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
