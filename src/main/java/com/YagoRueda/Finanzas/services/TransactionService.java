@@ -1,5 +1,6 @@
 package com.YagoRueda.Finanzas.services;
 
+import ai.onnxruntime.OrtException;
 import com.YagoRueda.Finanzas.DTOs.TransactionDTO;
 import com.YagoRueda.Finanzas.entities.TransactionEntity;
 import com.YagoRueda.Finanzas.entities.UserEntity;
@@ -7,6 +8,7 @@ import com.YagoRueda.Finanzas.exceptions.ErrorCsvException;
 import com.YagoRueda.Finanzas.exceptions.InputTransactionException;
 import com.YagoRueda.Finanzas.exceptions.UnauthorizedOperationException;
 import com.YagoRueda.Finanzas.repositories.TransactionRepository;
+import com.YagoRueda.Finanzas.utils.TransactionClassifier;
 import jakarta.transaction.Transactional;
 import org.apache.catalina.User;
 import org.apache.commons.csv.CSVFormat;
@@ -165,18 +167,13 @@ public class TransactionService {
                 }
 
 
-                // Validar categoría
-                String categoria = record.get("categoria");
-                if (categoria == null || categoria.isBlank()) {
-                    errors.add(record.getRecordNumber());
-                }
             }
             return errors;
         }
     }
 
     @Transactional
-    public void processCsv(UserEntity owner, MultipartFile file) throws IOException, IllegalArgumentException, ErrorCsvException {
+    public void processCsv(UserEntity owner, MultipartFile file) throws IOException, IllegalArgumentException, ErrorCsvException, OrtException {
 
         List<Long> errors = validateCsv(file);
         if (!errors.isEmpty()) {
@@ -202,13 +199,15 @@ public class TransactionService {
                 tx.setDescription(record.get("descripcion"));
                 float amount = Float.parseFloat(record.get("monto").replace(',', '.'));
                 tx.setAmount(amount);
-                tx.setCategory(record.get("categoria"));
+                tx.setCategory(TransactionClassifier.clasifyTransaction(record.get("descripcion")));
                 tx.setUser(owner);
                 tx.setCreated_at(Instant.now());
                 transactions.add(tx);
             }
 
             transactionRepository.saveAll(transactions);
+        } catch (OrtException e) {
+            throw new OrtException(e.getMessage());
         }
     }
 }
