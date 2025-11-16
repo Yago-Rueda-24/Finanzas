@@ -1,5 +1,6 @@
 package com.YagoRueda.Finanzas.controllers;
 
+import ai.onnxruntime.OrtException;
 import com.YagoRueda.Finanzas.DTOs.TransactionDTO;
 import com.YagoRueda.Finanzas.entities.TransactionEntity;
 import com.YagoRueda.Finanzas.entities.UserEntity;
@@ -105,6 +106,8 @@ public class TransactionController {
             return ResponseEntity.status(HttpStatus.OK).body(transaction);
         } catch (InputTransactionException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
+        } catch (OrtException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
@@ -125,7 +128,7 @@ public class TransactionController {
             return ResponseEntity.status(HttpStatus.OK).body(transaction);
         } catch (InputTransactionException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | OrtException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (UnauthorizedOperationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());

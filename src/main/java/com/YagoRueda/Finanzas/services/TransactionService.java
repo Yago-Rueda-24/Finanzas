@@ -48,10 +48,6 @@ public class TransactionService {
             errors.put("amount", "La cantidad debe ser un número positivo o negativo distinto de 0");
         }
 
-        if (dto.getCategory() == null || dto.getCategory().trim().isEmpty()) {
-            errors.put("category", "La categoría no puede estar vacía");
-        }
-
         if (dto.getDate() == null) {
             errors.put("date", "La fecha no puede ser nula");
         }
@@ -60,7 +56,7 @@ public class TransactionService {
 
     }
 
-    public TransactionEntity create(UserEntity owner, TransactionDTO transaction) throws InputTransactionException {
+    public TransactionEntity create(UserEntity owner, TransactionDTO transaction) throws InputTransactionException, OrtException {
 
         Map<String, String> errors = checkDTO(transaction);
         if (!errors.isEmpty()) {
@@ -72,17 +68,16 @@ public class TransactionService {
         TransactionEntity entity = new TransactionEntity();
         entity.setUser(owner);
         entity.setCreated_at(Instant.now());
-
         entity.setDate(transaction.getDate());
         entity.setAmount(transaction.getAmount());
         entity.setDescription(transaction.getDescription());
-        entity.setCategory(transaction.getCategory());
+        entity.setCategory(TransactionClassifier.clasifyTransaction(transaction.getDescription()));
 
         return transactionRepository.save(entity);
 
     }
 
-    public TransactionEntity modify(UserEntity owner, TransactionDTO transaction, long id) throws InputTransactionException, IllegalArgumentException, UnauthorizedOperationException {
+    public TransactionEntity modify(UserEntity owner, TransactionDTO transaction, long id) throws InputTransactionException, IllegalArgumentException, UnauthorizedOperationException, OrtException {
 
         Map<String, String> errors = checkDTO(transaction);
         if (!errors.isEmpty()) {
@@ -106,7 +101,7 @@ public class TransactionService {
         entity.setDate(transaction.getDate());
         entity.setAmount(transaction.getAmount());
         entity.setDescription(transaction.getDescription());
-        entity.setCategory(transaction.getCategory());
+        entity.setCategory(TransactionClassifier.clasifyTransaction(transaction.getDescription()));
 
         return transactionRepository.save(entity);
     }
@@ -207,6 +202,7 @@ public class TransactionService {
 
             transactionRepository.saveAll(transactions);
         } catch (OrtException e) {
+
             throw new OrtException(e.getMessage());
         }
     }
